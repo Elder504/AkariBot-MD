@@ -45,7 +45,7 @@ global.jadi = 'AkariJadiBot'
 global.packname = '𝗘𝗟𝗗𝗘𝗥-𝗕𝗢𝗧'
 global.botname = '𝗘𝗟𝗗𝗘𝗥-𝗕𝗢𝗧'
 global.author = 'By ianalejandrook5x'
-global.dev = 'Pσɯҽɾҽԃ Bყ Tҽαɱ Sԋιɳιɳɠ'
+global.dev = '> *© ⍴᥆ᥕᥱrᥱძ ᑲᥡ һᥒ ᥱᥣძᥱr*'
 global.textbot = 'Aƙαɾι : ιαɳαʅҽʝαɳԃɾσσƙ15x 🌸'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
