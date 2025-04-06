@@ -298,3 +298,225 @@ return await connectionUpdate(authFile);
 const bots = await Promise.all(botPromises);
 global.conns = bots.filter(Boolean);
 console.log(chalk.bold.greenBright(`🍭 Todos los Sub-Bots se conectaron con éxito.`))
+}
+
+(async () => {
+global.conns = [];
+
+const mainBotAuthFile = 'CrowSession';
+try {
+const mainBot = await connectionUpdate(mainBotAuthFile);
+global.conns.push(mainBot);
+console.log(chalk.bold.greenBright(`🍭 CrowBot conectado correctamente.`))
+
+await connectSubBots();
+} catch (error) {
+console.error(chalk.bold.cyanBright(`🥀 Error al iniciar CrowBot-ST: `, error))
+}
+})();
+
+let isInit = true;
+let handler = await import('./handler.js');
+global.reloadHandler = async function(restatConn) {
+try {
+const Handler = await import(`./handler.js?update=${Date.now()}`).catch(console.error);
+if (Object.keys(Handler || {}).length) handler = Handler;
+} catch (e) {
+console.error(e);
+}
+if (restatConn) {
+const oldChats = global.conn.chats;
+try {
+global.conn.ws.close();
+} catch { }
+conn.ev.removeAllListeners();
+global.conn = makeWASocket(connectionOptions, {chats: oldChats});
+isInit = true;
+}
+if (!isInit) {
+conn.ev.off('messages.upsert', conn.handler)
+conn.ev.off('connection.update', conn.connectionUpdate)
+conn.ev.off('creds.update', conn.credsUpdate)
+}
+
+conn.handler = handler.handler.bind(global.conn)
+conn.connectionUpdate = connectionUpdate.bind(global.conn)
+conn.credsUpdate = saveCreds.bind(global.conn, true)
+
+const currentDateTime = new Date()
+const messageDateTime = new Date(conn.ev)
+if (currentDateTime >= messageDateTime) {
+const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0])
+} else {
+const chats = Object.entries(conn.chats).filter(([jid, chat]) => !jid.endsWith('@g.us') && chat.isChats).map((v) => v[0])}
+
+conn.ev.on('messages.upsert', conn.handler)
+conn.ev.on('connection.update', conn.connectionUpdate)
+conn.ev.on('creds.update', conn.credsUpdate)
+isInit = false
+return true
+}
+
+const pluginFolder = global.__dirname(join(__dirname, './plugins/index'))
+const pluginFilter = (filename) => /\.js$/.test(filename)
+global.plugins = {}
+async function filesInit() {
+for (const filename of readdirSync(pluginFolder).filter(pluginFilter)) {
+try {
+const file = global.__filename(join(pluginFolder, filename))
+const module = await import(file)
+global.plugins[filename] = module.default || module
+} catch (e) {
+conn.logger.error(e)
+delete global.plugins[filename]
+}}}
+filesInit().then((_) => Object.keys(global.plugins)).catch(console.error)
+
+global.reload = async (_ev, filename) => {
+if (pluginFilter(filename)) {
+const dir = global.__filename(join(pluginFolder, filename), true)
+if (filename in global.plugins) {
+if (existsSync(dir)) conn.logger.info(` SE ACTULIZADO - '${filename}' CON ÉXITO`)
+else {
+conn.logger.warn(`SE ELIMINO UN ARCHIVO : '${filename}'`)
+return delete global.plugins[filename];
+}
+} else conn.logger.info(`SE DETECTO UN NUEVO PLUGINS : '${filename}'`)
+const err = syntaxerror(readFileSync(dir), filename, {
+sourceType: 'module',
+allowAwaitOutsideFunction: true,
+});
+if (err) conn.logger.error(`SE DETECTO UN ERROR DE SINTAXIS | SYNTAX ERROR WHILE LOADING '${filename}'\n${format(err)}`);
+else {
+try {
+const module = (await import(`${global.__filename(dir)}?update=${Date.now()}`));
+global.plugins[filename] = module.default || module;
+} catch (e) {
+conn.logger.error(`HAY UN ERROR REQUIERE EL PLUGINS '${filename}\n${format(e)}'`);
+} finally {
+global.plugins = Object.fromEntries(Object.entries(global.plugins).sort(([a], [b]) => a.localeCompare(b)));
+}}}};
+Object.freeze(global.reload);
+watch(pluginFolder, global.reload);
+await global.reloadHandler();
+async function _quickTest() {
+const test = await Promise.all([
+spawn('ffmpeg'),
+spawn('ffprobe'),
+spawn('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-filter_complex', 'color', '-frames:v', '1', '-f', 'webp', '-']),
+spawn('convert'),
+spawn('magick'),
+spawn('gm'),
+spawn('find', ['--version']),
+].map((p) => {
+return Promise.race([
+new Promise((resolve) => {
+p.on('close', (code) => {
+resolve(code !== 127);
+});
+}),
+new Promise((resolve) => {
+p.on('error', (_) => resolve(false));
+})]);
+}));
+const [ffmpeg, ffprobe, ffmpegWebp, convert, magick, gm, find] = test;
+const s = global.support = {ffmpeg, ffprobe, ffmpegWebp, convert, magick, gm, find};
+Object.freeze(global.support);
+}
+function clearTmp() {
+const tmpDir = join(__dirname, 'tmp')
+const filenames = readdirSync(tmpDir)
+filenames.forEach(file => {
+const filePath = join(tmpDir, file)
+unlinkSync(filePath)})
+}
+function purgeSession() {
+let prekey = []
+let directorio = readdirSync("./CrowSession")
+let filesFolderPreKeys = directorio.filter(file => {
+return file.startsWith('pre-key-')
+})
+prekey = [...prekey, ...filesFolderPreKeys]
+filesFolderPreKeys.forEach(files => {
+unlinkSync(`./CrowSession/${files}`)
+})
+} 
+function purgeSessionSB() {
+try {
+const listaDirectorios = readdirSync(`./${authFileJB}/`);
+let SBprekey = [];
+listaDirectorios.forEach(directorio => {
+if (statSync(`./${authFileJB}/${directorio}`).isDirectory()) {
+const DSBPreKeys = readdirSync(`./${authFileJB}/${directorio}`).filter(fileInDir => {
+return fileInDir.startsWith('pre-key-')
+})
+SBprekey = [...SBprekey, ...DSBPreKeys];
+DSBPreKeys.forEach(fileInDir => {
+if (fileInDir !== 'creds.json') {
+unlinkSync(`./${authFileJB}/${directorio}/${fileInDir}`)
+}})
+}})
+if (SBprekey.length === 0) {
+console.log(chalk.bold.green(`\n╭» 🟡 CrowJadiBot 🟡\n│→ NADA POR ELIMINAR \n╰― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― 🗑️♻️`))
+} else {
+console.log(chalk.bold.cyanBright(`\n╭» ⚪ CrowJadiBot ⚪\n│→ ARCHIVOS NO ESENCIALES ELIMINADOS\n╰― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― 🗑️♻️`))
+}} catch (err) {
+console.log(chalk.bold.red(`\n╭» 🔴 CrowJadiBot 🔴\n│→ OCURRIÓ UN ERROR\n╰― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― 🗑️♻️\n` + err))
+}}
+function purgeOldFiles() {
+const directories = ['./CrowSession/', './CrowJadiBot/']
+directories.forEach(dir => {
+readdirSync(dir, (err, files) => {
+if (err) throw err
+files.forEach(file => {
+if (file !== 'creds.json') {
+const filePath = path.join(dir, file);
+unlinkSync(filePath, err => {
+if (err) {
+console.log(chalk.bold.red(`\n╭» 🔴 ARCHIVO 🔴\n│→ ${file} NO SE LOGRÓ BORRAR\n╰― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― 🗑️❌\n` + err))
+} else {
+console.log(chalk.bold.green(`\n╭» 🟣 ARCHIVO 🟣\n│→ ${file} BORRADO CON ÉXITO\n╰― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― 🗑️♻️`))
+} }) }
+}) }) }) }
+function redefineConsoleMethod(methodName, filterStrings) {
+const originalConsoleMethod = console[methodName]
+console[methodName] = function() {
+const message = arguments[0]
+if (typeof message === 'string' && filterStrings.some(filterString => message.includes(atob(filterString)))) {
+arguments[0] = ""
+}
+originalConsoleMethod.apply(console, arguments)
+}}
+setInterval(async () => {
+if (stopped === 'close' || !conn || !conn.user) return
+await clearTmp()
+console.log(chalk.bold.cyanBright(`\n╭» 🟢 MULTIMEDIA 🟢\n│→ ARCHIVOS DE LA CARPETA TMP ELIMINADAS\n╰― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― 🗑️♻️`))}, 1000 * 60 * 4) // 4 min 
+
+setInterval(async () => {
+if (stopped === 'close' || !conn || !conn.user) return
+await purgeOldFiles()
+console.log(chalk.bold.cyanBright(`\n╭» 🟠 ARCHIVOS 🟠\n│→ ARCHIVOS RESIDUALES ELIMINADAS\n╰― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― 🗑️♻️`))}, 1000 * 60 * 10)
+
+_quickTest().then(() => conn.logger.info(chalk.bold(`🍭  H E C H O\n`.trim()))).catch(console.error)
+
+let file = fileURLToPath(import.meta.url)
+watchFile(file, () => {
+unwatchFile(file)
+console.log(chalk.bold.greenBright("Actualizado"))
+import(`${file}?update=${Date.now()}`)
+})
+
+async function isValidPhoneNumber(number) {
+try {
+number = number.replace(/\s+/g, '')
+// Si el número empieza con '+521' o '+52 1', quitar el '1'
+if (number.startsWith('+521')) {
+number = number.replace('+521', '+52'); // Cambiar +521 a +52
+} else if (number.startsWith('+52') && number[4] === '1') {
+number = number.replace('+52 1', '+52'); // Cambiar +52 1 a +52
+}
+const parsedNumber = phoneUtil.parseAndKeepRawInput(number)
+return phoneUtil.isValidNumber(parsedNumber)
+} catch (error) {
+return false
+}}
