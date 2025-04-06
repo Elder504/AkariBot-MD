@@ -46,6 +46,7 @@
 "@ibaraki-douji/pixivts": "^2.4.1",
 "awesome-phonenumber": "^3.4.0",
 "ruhend-scraper": "^7.0.4",
+"node-cache": "latest",
 "axios": "^1.1.2",
 "acrcloud": "^1.4.0",
 "form-data": "^4.0.0",
