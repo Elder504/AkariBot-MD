@@ -10,10 +10,6 @@ let grupos = `*Hola!, te invito a unirte a los grupos oficiales del Bot para con
 
 *─ׄ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׄ*
 
-➠ Enlace anulado? entre aquí! 
-
-☁ Tҽαɱ Cԋαɳɳҽʅ Iαɳ 🌸
-*✰* ${channel}
 
 > ${dev}`
 
