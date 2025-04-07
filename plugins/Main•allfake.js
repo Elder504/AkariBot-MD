@@ -58,23 +58,7 @@ global.waittt = '🧸 Eʂρҽɾҽ υɳ ɱσɱҽɳƚσ...'
 global.waitttt = '🧸 Eʂρҽɾҽ υɳ ɱσɱҽɳƚσ...'
 
 //Enlaces
-var canal = 'https://whatsapp.com/channel/0029VaQD7LAJP216tu9liI2A'  
-var canal2 = 'https://whatsapp.com/channel/0029Vam7yUg77qVaz3sIAp0z'
-var git = 'https://github.com/ianalejandrook15x' 
-var youtube = 'https://www.youtube.com/@ianalejandrook15x' 
-var github = 'https://github.com/ianalejandrook15x/AkariBot-MD'  
-var panel = 'https://panel.skyultraplus.com'
-var dash = 'https://dash.skyultraplus.com'
-var tienda = 'https://dash.skyultraplus.com/store'
-var status = 'https://estado.skyultraplus.com'
-var discord = 'https://discord.com/invite/T7ksHu7mkz'
-var paypal = 'https://paypal.me/kevintomasolazo23'
-let tiktok = 'https://tiktok.com/@ian.ian271'
-let correo = 'alejandroxddd92@gmail.com'
 
-global.redes = [canal, canal2, git, youtube, github, panel, dash, tienda, status, discord, paypal, tiktok, correo].getRandom()
-
-global.redeshost = [panel, dash, tienda, status, discord, paypal].getRandom()
 
 //Imagen
 let category = "imagen"
