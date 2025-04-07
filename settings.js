@@ -17,9 +17,8 @@ global.confirmCode = ''
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.owner = [
-   ['5493876639332', 'Ian', true],
    ['573012482597'],
-   ['5218713339906', 'Diego', true]
+   ['50493374445', 'Elder', true]
 ]
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
@@ -44,9 +43,9 @@ global.jadi = 'AkariJadiBot'
 
 global.packname = '𝗘𝗟𝗗𝗘𝗥-𝗕𝗢𝗧'
 global.botname = '𝗘𝗟𝗗𝗘𝗥-𝗕𝗢𝗧'
-global.author = 'By ianalejandrook5x'
+global.author = '⍴᥆ᥕᥱrᥱძ ᑲᥡ һᥒ ᥱᥣძᥱr'
 global.dev = '© ⍴᥆ᥕᥱrᥱძ ᑲᥡ һᥒ ᥱᥣძᥱr'
-global.textbot = 'Aƙαɾι : ιαɳαʅҽʝαɳԃɾσσƙ15x 🌸'
+global.textbot = 'Aƙαɾι : ⍴᥆ᥕᥱrᥱძ ᑲᥡ һᥒ ᥱᥣძᥱr'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
